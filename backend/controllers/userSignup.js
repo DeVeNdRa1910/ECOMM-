@@ -22,7 +22,12 @@ export async function userSignupController(req, res) {
     if(!password){
       throw new Error("Please provide Password");
     }
+    if(password.length<8){
+      throw new Error("Password must contain atleas 8 charater")
+    }
 
+
+    // ham password ko encrypt karke DB me store kar rahe hai
     const salt = bcrypt.genSaltSync(10);
 
     const encriptedPassword = await bcrypt.hashSync(password, salt)
@@ -33,6 +38,7 @@ export async function userSignupController(req, res) {
 
     const payload = {
       ...req.body,
+      role: "GENERAL",
       password: encriptedPassword
     }
 

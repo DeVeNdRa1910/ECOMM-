@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 import loginImage from "../assest/signin.gif";
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import imageToBase64 from "../helper/imageToBase64";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
-function Signin() {
-  const [showPassword, setShowPassword] = useState(true);
+function Update() {
   const [dp, setDp] = useState(loginImage);
   const [data, setData] = useState({
     name: "",
     email: "",
-    password: "",
     profilePic: "",
   });
 
@@ -36,47 +32,27 @@ function Signin() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/signup', data, {
+      const response = await axios.post('/api/update-profile', data, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` 
         }
       });
 
       if(response.data.success){
-        toast.success(response.message)
-        navigate('/login')
+        navigate('/home')
+        toast.success("Profile Updated successfully")
       }
       if(!response.data.success){
-        toast.error(response.message)
+        toast.error("Profile updation failed")
       }
-
-      
-
-      console.log( response.data);
+      // console.log( response.data);
     } catch (error) {
       console.error('Error signing up:', error);
       throw error;
     }
 
-    
-
-    //OR
-    
-/*     const resp = await fetch(SummaryApi.signUp.url,{
-      method: SummaryApi.signUp.method,
-      headers:{
-        "content-type": "application/json"
-      },
-      body: json.stringify(resp)
-    })
-
-    const newData = await resp.json()
-
-    console.log(newData); */
-    
   }
-
-  //for showing notification of user created successfully we are using tostify
 
   const handleUploadPic = async (e) => {
     const file = e.target.files[0];
@@ -92,8 +68,6 @@ function Signin() {
     });
 
     setDp(imagePic)
-
-    console.log("file", imagePic);
   };
 
   return (
@@ -126,11 +100,10 @@ function Signin() {
               <div className="bg-slate-100 p-2 rounded-lg">
                 <input
                   type="name"
-                  placeholder="Enter Your Name"
+                  placeholder="Enter your new name"
                   onChange={handleOnChange}
                   name="name"
                   value={data.name}
-                  required
                   className="text-black w-full h-full outline-none bg-transparent"
                 />
               </div>
@@ -141,60 +114,18 @@ function Signin() {
               <div className="bg-slate-100 p-2 rounded-lg ">
                 <input
                   type="email"
-                  placeholder="Enter Your Email"
+                  placeholder="Enter your new email"
                   onChange={handleOnChange}
                   name="email"
                   value={data.email}
-                  required
-                  className="text-black w-full h-full outline-none bg-transparent"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="">Password :</label>
-              <div className="bg-slate-100 p-2 rounded-lg flex">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Create Your Secret Password"
-                  onChange={handleOnChange}
-                  name="password"
-                  value={data.password}
-                  required
-                  className="text-black w-full h-full outline-none bg-transparent"
-                />
-                <div
-                  onClick={() => {
-                    setShowPassword((prev) => !prev);
-                  }}
-                  className="text-2xl text-black cursor-pointer"
-                >
-                  {showPassword ? <FaEye /> : <FaEyeSlash />}
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="">Confirm Password :</label>
-              <div className="bg-slate-100 p-2 rounded-lg flex">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  placeholder="Create Your Secret Password"
                   className="text-black w-full h-full outline-none bg-transparent"
                 />
               </div>
             </div>
 
             <button className="bg-orange-500 hover:bg-orange-500 text-lg font-bold text-white w-full  my-5 px-4 py-2 rounded-md active:scale-95 transition-all max-w-[50%] mx-auto block">
-              Signup
+              Update
             </button>
-            <p className="block w-fit mx-auto">
-              Already have an account?{" "}
-              <Link to="/login" className="hover:text-orange-500">
-                Login
-              </Link>
-            </p>
           </form>
         </div>
       </div>
@@ -202,4 +133,4 @@ function Signin() {
   );
 }
 
-export default React.memo(Signin);
+export default React.memo(Update);
