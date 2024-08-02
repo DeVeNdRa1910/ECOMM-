@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -6,13 +7,15 @@ import Login from "./pages/Login";
 import Signin from "./pages/Signin";
 import Forgot from "./pages/Forgot";
 import Landing from "./pages/Landing";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
-import context from "./context";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "./store/userSlice";
+import context from "./context";
+import axios from "axios";
 import Update from "./pages/Update";
+import AdminPannel from "./pages/AdminPannel";
+import Allusers from "./pages/Allusers";
+import Products from "./pages/Products";
 
 function App() {
 
@@ -43,7 +46,7 @@ function App() {
       <context.Provider value={{ fetchUserDetails }}>
         <BrowserRouter>
           <Header />
-          <main className="min-h-[130vh] mt-[16vh]">
+          <main className="min-h-[130vh] mt-[8vh]">
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
@@ -51,6 +54,10 @@ function App() {
               <Route path="/update-profile" element={<Update />} />
               <Route path="/forgotpassword" element={<Forgot />} />
               <Route path="/home" element={<Home />} />
+              <Route path="/admin-pannel" element={<AdminPannel />} >              
+                <Route path="all-users" element={<Allusers />} />
+                <Route path="products" element={<Products />} />
+              </Route>
             </Routes>
           </main>
           <Footer />

@@ -50,8 +50,6 @@ function Signin() {
         toast.error(response.message)
       }
 
-      
-
       console.log( response.data);
     } catch (error) {
       console.error('Error signing up:', error);
@@ -93,7 +91,7 @@ function Signin() {
 
     setDp(imagePic)
 
-    console.log("file", imagePic);
+    // console.log("file", imagePic);
   };
 
   return (

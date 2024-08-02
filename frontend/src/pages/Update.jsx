@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import imageToBase64 from "../helper/imageToBase64";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "../store/userSlice";
+import { GrFormClose } from "react-icons/gr";
 
 function Update() {
   const [dp, setDp] = useState(loginImage);
@@ -13,6 +16,7 @@ function Update() {
     profilePic: "",
   });
 
+  const dispatch = useDispatch()
 
   const navigate = useNavigate()
 
@@ -39,7 +43,10 @@ function Update() {
         }
       });
 
+      // console.log(response.data.data);
+      
       if(response.data.success){
+        dispatch(setUserDetails(response.data.data))
         navigate('/home')
         toast.success("Profile Updated successfully")
       }
@@ -72,9 +79,8 @@ function Update() {
 
   return (
     <section id="signin" className="my-4 ">
-      <ToastContainer/>
       <div className="mx-auto container px-4">
-        <div className="max-w-md mx-auto rounded-md bg-stone-900 hover:bg-stone-950 text-white p-2 py-5 w-full">
+        <div className="max-w-md mx-auto rounded-md bg-stone-900 hover:bg-stone-950 text-white p-2 py-5 w-full relative ">
           <div className="w-20 h-20 mx-auto relative rounded-full overflow-hidden">
             <div className="rounded-full overflow-hidden">
               <img src={dp || loginImage} alt="Login Icon" />
@@ -126,6 +132,15 @@ function Update() {
             <button className="bg-orange-500 hover:bg-orange-500 text-lg font-bold text-white w-full  my-5 px-4 py-2 rounded-md active:scale-95 transition-all max-w-[50%] mx-auto block">
               Update
             </button>
+
+            <p className="text-center text-xl font-bold">
+              Do it <Link to={'/home'} className="hover:underline hover:text-orange-500 ">Later</Link>? 
+            </p>
+
+            <div className="absolute top-[6%] right-[6%] text-3xl">
+              <Link to={'/home'} className="hover:underline hover:text-orange-500 "><GrFormClose/></Link>
+            </div>
+
           </form>
         </div>
       </div>

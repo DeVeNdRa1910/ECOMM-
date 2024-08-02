@@ -6,7 +6,7 @@ function Logo() {
     <Link to={'/'}>
       <img 
         src={logoImage} 
-        className='rounded-full h-[3vw] w-[3vw] min-h-[50px] min-w-[50px] active:scale-95' 
+        className='rounded-full h-[7vh] w-[7vh]  active:scale-95' 
         alt="Logo" 
       />
     </Link>

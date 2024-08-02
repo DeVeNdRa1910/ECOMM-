@@ -16,7 +16,7 @@ export async function updateProfileController(req, res){
 
         const user = await User.findById(sessionUser);
 
-        console.log("User for profile Update",user);
+        // console.log("User for profile Update",user);
 
         const updatedUser = await User.findByIdAndUpdate(sessionUser, payload, { new: true });
 

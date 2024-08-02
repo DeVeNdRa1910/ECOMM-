@@ -29,7 +29,7 @@ function Login() {
     });
   };
 
-  console.log(data);
+  // console.log(data);
 
   const navigate = useNavigate()
 
@@ -59,7 +59,7 @@ function Login() {
       */
 
 
-      console.log( resp.data);
+      // console.log( resp.data);
     } catch (error) {
       console.error('Error signing up:', error);
       throw error;
