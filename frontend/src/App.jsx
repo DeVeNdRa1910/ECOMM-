@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import './App.css';
 import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import Header from "./components/Header";
@@ -16,6 +17,7 @@ import Update from "./pages/Update";
 import AdminPannel from "./pages/AdminPannel";
 import Allusers from "./pages/Allusers";
 import Products from "./pages/Products";
+import CategoryProduct from "./pages/CategoryProduct";
 
 function App() {
 
@@ -27,7 +29,7 @@ function App() {
         withCredentials: true,
       });
 
-      console.log("App.jsx user Data is ", resp.data);
+      // console.log("App.jsx user Data is ", resp.data);
       if(resp.data.success){
         dispatch(setUserDetails(resp.data.data))
       }
@@ -54,6 +56,7 @@ function App() {
               <Route path="/update-profile" element={<Update />} />
               <Route path="/forgotpassword" element={<Forgot />} />
               <Route path="/home" element={<Home />} />
+              <Route path="/product-category/:categoryName" element={<CategoryProduct />} />
               <Route path="/admin-pannel" element={<AdminPannel />} >              
                 <Route path="all-users" element={<Allusers />} />
                 <Route path="products" element={<Products />} />

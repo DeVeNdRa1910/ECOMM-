@@ -3,7 +3,7 @@ import loginImage from "../assest/signin.gif";
 import { Link, useNavigate } from "react-router-dom";
 import imageToBase64 from "../helper/imageToBase64";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../store/userSlice";
 import { GrFormClose } from "react-icons/gr";

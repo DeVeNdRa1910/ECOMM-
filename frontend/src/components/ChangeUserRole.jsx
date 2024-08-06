@@ -3,8 +3,9 @@ import Role from '../common/role'
 import { GrFormClose } from "react-icons/gr";
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
-function ChangeUserRole({name, email, role, onClose}) {
+function ChangeUserRole({name, email, role, onClose,userId, callFunc}) {
 
   const [userRole, setUserRole] = useState(role)
 
@@ -13,27 +14,39 @@ function ChangeUserRole({name, email, role, onClose}) {
     setUserRole(e.target.value)
   }
 
+  const user = useSelector(state => state.user.user)
+
   async function updateUserRole() {
-    try {
-      const resp = await axios.post('/api/update-user',{role: userRole,email,name},{
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-
-      if (resp.data.success) {
-        toast.success("Role updated successfully");
-      } else {
-        toast.error("Failed to update role");
+    if(user.role === "ADMIN"){
+      try {
+        const resp = await axios.patch('/api/update-user', {
+            userId: userId,
+            role: userRole,
+            email,
+            name
+          }, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+  
+          if (resp.data.success) {
+            toast.success('Role updated successfully');
+            onClose();
+            callFunc();
+          } else {
+            toast.error('Failed to update role');
+          }
+      } catch (error) {
+        // console.log(error);
+        toast.error('An error occurred while updating the role');
+      } finally {
+        onClose();
       }
-
-      console.log("role update",resp.data);
-    }catch(error){
-      console.error("Error updating role:", error);
-      toast.error("An error occurred while updating the role");
+    } else {
+      toast.error("Only ADMIN can change Role")
     }
-    
   }
 
   return (

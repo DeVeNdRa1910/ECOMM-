@@ -13,3 +13,38 @@
 .userTable td{
   @apply border text-base text-center
 }
+
+/* Custom scrollbar styles */
+/* App.css */
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hidden {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+
+
+/* Additional styles */
+.select-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.select-label {
+  margin-right: 0.5rem;
+}
+
+.custom-select {
+  padding: 0.25rem 1rem;
+  background-color: black;
+  color: white;
+  border-radius: 0.375rem; /* Tailwind's rounded-md */
+}
+

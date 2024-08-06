@@ -119,7 +119,7 @@ function Login() {
                   name="email"
                   value={data.email}
                   required
-                  className="text-black w-full h-full outline-none bg-transparent"
+                  className="text-black bg-white w-full h-full outline-none bg-transparent"
                 />
               </div>
             </div>

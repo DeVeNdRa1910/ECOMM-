@@ -1,37 +1,45 @@
-import axios, { all } from 'axios';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import moment from 'moment'
 import { MdModeEdit } from "react-icons/md";
 import ChangeUserRole from '../components/ChangeUserRole';
+import { useSelector } from 'react-redux';
 
 
 function Allusers() {
 
   const [allUsers, setAllUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-
   const [openUpdateRole, setOpenUpdateRole] = useState(false)
+  const [updateUserDetails, setUpdateUserDetails] = useState({
+    name: "",
+    email: "",
+    role: "",
+    _id: ""
+  });
+
+  // const user = useSelector(state => state.user.user)
+  // console.log(user);
+  
 
   async function fetchUsersData(){
-    const resp = await axios.get('/api/allusers', {
-      withCredentials: true
-    })
+      const resp = await axios.get('/api/allusers', {
+        withCredentials: true
+      })
 
-    // console.log(resp);
-    
+      // console.log(resp);
 
-    if(resp.data.success){
-      // console.log(resp.data);
-      
-      toast.success("All users fetched successfully")
-      setAllUsers(resp.data.users)
-    }
+      if(resp.data.success){
+        // console.log(resp.data);
+        
+        // toast.success("All users fetched successfully")
+        setAllUsers(resp.data.users)
+      }
 
-    if(resp.data.error){
-      toast.error("Something went wrong")
-    }
-    // console.log(resp.data.users);
+      if(resp.data.error){
+        toast.error("Something went wrong")
+      }
+      // console.log(resp.data.users);
   }
 
   useEffect(()=>{
@@ -42,11 +50,11 @@ function Allusers() {
   
   function editHandler(user){
     setOpenUpdateRole(prev=>!prev)
-    setSelectedUser(user);
+    setUpdateUserDetails(user);
   }
 
   return (
-    <div>
+    <div className=''>
       <table className='w-full userTable'>
         <thead className='bg-black text-white py-2'>
           <tr>
@@ -59,13 +67,13 @@ function Allusers() {
             <th>Action</th>
           </tr>
         </thead>
-        <tbody className='border border-1 gap-2'>
+        <tbody className='border border-1 gap-2 scrollbar'>
           {
             allUsers.map((user, i) => (
               <tr key={user?._id}  className='border border-1 my-1'>
-                <td className='pl-4'>{i+1}</td>
+                <td className=''>{i+1}</td>
                 <td >
-                  {user.profilePic ? (<img className='w-[9vw] h-auto max-h-[18vw] rounded-lg mx-[2vw] my-1' src={user?.profilePic} alt={user?.name} />) : (<p>Image Not available</p>)}
+                  {user.profilePic ? (<img className='w-[9vw] h-auto max-h-[18vw] rounded-lg my-1 block mx-auto' src={user?.profilePic} alt={user?.name} />) : (<p>Image Not available</p>)}
                 </td>
                 <td>{user?.name}</td>
                 <td>{user?.email}</td>
@@ -78,20 +86,36 @@ function Allusers() {
                   >
                     <MdModeEdit />
                   </button>
-                  {openUpdateRole && selectedUser && selectedUser._id === user._id && (
+                  {/* {openUpdateRole && selectedUser && selectedUser._id === user._id && (
                   <ChangeUserRole 
                     key={user._id}
                     name={user.name} 
                     email={user.email} 
                     role={user.role} 
+                    userId={user._id}
+                    callFun={fetchUsersData}
                     onClose={()=>{setOpenUpdateRole(prev=>!prev)}} 
-                  />)}
+                  />)} */}
                 </td>
               </tr>
             ))
           }
         </tbody>
       </table>
+
+        {
+          openUpdateRole && (
+            <ChangeUserRole 
+                    name={updateUserDetails.name} 
+                    email={updateUserDetails.email} 
+                    role={updateUserDetails.role} 
+                    userId={updateUserDetails._id}
+                    callFunc={fetchUsersData}
+                    onClose={()=>{setOpenUpdateRole(prev=>!prev)}} 
+                  />
+          )
+        }
+
     </div>
   )
 }
