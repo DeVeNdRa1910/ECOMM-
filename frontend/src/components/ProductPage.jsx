@@ -16,6 +16,7 @@ function ProductPage() {
   });
   const [loading, setLoading] = useState(false);
   const [allCategoryProducts, setAllCategoryProducts] = useState([]);
+  const [activeImage, setActiveImage] = useState([]);
 
   async function fetchProductData() {
     setLoading(true);
@@ -23,6 +24,7 @@ function ProductPage() {
       const resp = await axios.get(`/api/product-details?productId=${productId}`);
       // console.log(resp.data.data);
       setProduct(resp.data.data);
+      setActiveImage(resp.data.data?.productImage[0])
       const resp2 = await fetchCategoryWiseProducts(resp.data.data.category);
       setAllCategoryProducts(resp2.data);
     } catch (error) {
@@ -68,7 +70,7 @@ function ProductPage() {
                   {product?.productImage.length > 0 && (
                     <img
                       className="w-auto h-auto max-h-[70vh] object-cover object-center"
-                      src={product?.productImage[0]}
+                      src={activeImage}
                       alt=""
                     />
                   )}
@@ -128,13 +130,14 @@ function ProductPage() {
         {product?.productImage[0] && (
           <div className="relative w-full max-w-4xl overflow-x-auto">
             <div className="relative w-full max-w-full overflow-x-auto scrollbar">
-              <div className="flex space-x-4 mx-[2vw] overflow-y-hidden">
+              <div className="flex space-x-4 mx-[2vw]">
                 {product?.productImage.map((image, index) => (
                   <div key={index} className="relative group flex-shrink-0">
                     <img
                       src={image}
                       alt={`Slide ${index}`}
-                      className="w-40 h-60 hover:scale-110 transition-all object-cover rounded-lg my-5"
+                      className="w-[25vh] h-[25vh] hover:shadow-white hover:shadow-lg transition-all duration-500 object-cover rounded-lg my-5 "
+                      onClick={()=>{setActiveImage(image)}}
                     />
                   </div>
                 ))}

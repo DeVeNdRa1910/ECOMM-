@@ -158,7 +158,7 @@ function AdminEditProduct({onClose, productData, onProductUpdate}) {
             </div>
 
             <div className="flex items-center justify-center w-full my-3">
-              {loading ? <LoadingSpinner size={2} /> : <button
+              {loading ? <LoadingSpinner size={8} /> : <button
                 onClick={handleUpdateProduct}
                 className="mt-2 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white py-1 px-4 rounded-md"
               >
