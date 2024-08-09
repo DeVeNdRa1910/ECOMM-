@@ -9,28 +9,30 @@ import { IoClose } from "react-icons/io5";
 import { FaCartShopping } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
 import { setUserDetails } from "../store/userSlice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch();
+  const [netQuantity, setNetQuantity] = useState(0)
 
   const user = useSelector((state) => state?.user?.user);
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   //console.log(user);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const navigate = useNavigate();
-
   async function logoutHandler() {
     const resp = await axios.get("/api/logout", {
       withCredentials: true,
     });
     if (resp.data.success) {
-      navigate("/");
+      navigate("/login");
       //console.log(resp.data);
       toast.success("Logout Successfully !!!");
       dispatch(setUserDetails(null));
@@ -40,7 +42,7 @@ function Header() {
       toast.error("Logout Failed !!!");
     }
 
-    navigate("/");
+    navigate("/login");
   }
 
 
@@ -55,8 +57,16 @@ function Header() {
     }
   }
 
+  useEffect(() => {
+    let totalQuantity = 0;
+    for (let i = 0; i < cart.length; i++) {
+      totalQuantity += cart[i].quantity;
+    }
+    setNetQuantity(totalQuantity);
+  }, [cart]);
+
   return (
-    <nav className="bg-orange-500 h-[8vh] w-full text-white fixed top-0 left-0 z-10 opacity-85 backdrop-blur-lg">
+    <nav className="bg-orange-500 h-[8vh] w-full text-white fixed top-0 left-0 z-20 opacity-85 backdrop-blur-lg">
       <div className="container mx-auto flex justify-between items-center h-full px-2">
         <div className="flex items-center justify-start w-[30vw]">
           <Logo />
@@ -99,8 +109,10 @@ function Header() {
               </div>
             )}
           </button>
-          <button className="bg-black  px-4 flex items-center justify-between gap-2 rounded-xl">
-            <FaCartShopping />:<p className="flex">{0}</p>
+          <button 
+          onClick={()=>{navigate('/Cart')}}
+          className="bg-black  px-4 flex items-center justify-between gap-2 rounded-xl">
+            <FaCartShopping />:<p className="flex">{netQuantity}</p>
           </button>
 
           <button onClick={toggleMenu} className="">

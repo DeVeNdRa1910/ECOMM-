@@ -1,29 +1,55 @@
 import React from "react";
+import displayInrCurrency from '../helper/displayCurrency';
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { add } from '../store/cartSlice'
 
-function Card() {
+function Card({data}) {
+
+  const dispatch = useDispatch()
+
+  function addToCart(e){
+    e.stopPropagation();
+    e.preventDefault();
+
+    const cartObj = {
+      id: data?._id,
+      productName: data?.productName,
+      image: data?.productImage[0],
+      quantity: 1,
+      price: data?.sellingPrice
+    }
+
+    dispatch(add(cartObj))
+  }
+
   return (
-    <div>
-      <div class="da relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50">
-        <div class="absolute inset-0 bg-center dark:bg-black"></div>
-        <div class="group relative m-0 flex h-72 w-96 rounded-xl shadow-xl ring-gray-900/5 sm:mx-auto sm:max-w-lg">
-          <div class="z-10 h-full w-full overflow-hidden rounded-xl border border-gray-200 opacity-80 transition duration-300 ease-in-out group-hover:opacity-100 dark:border-gray-700 dark:opacity-70">
+    <>
+      <div className="bg-gradient-to-b from-slate-600  to-white w-[20vw] h-[56vh] mx-auto rounded-xl shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-lg hover:shadow-orange-700 card glass">
+        <Link to={'/product-page/' + data?._id}>
+          <div className="w-full h-[30vh] py-[2vh] relative flex justify-center">
             <img
-              src="https://images.unsplash.com/photo-1506187334569-7596f62cf93f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3149&q=80"
-              class="animate-fade-in block h-full w-full scale-100 transform object-cover object-center opacity-100 transition duration-300 group-hover:scale-110"
-              alt=""
+              src={data?.productImage[0]}
+              alt={data?.productName}
+              className="w-auto h-[30vh] object-cover object-center rounded-md"
             />
           </div>
-          <div class="absolute bottom-0 z-20 m-0 pb-4 ps-4 transition duration-300 ease-in-out group-hover:-translate-y-1 group-hover:translate-x-3 group-hover:scale-110">
-            <h1 class="font-serif text-2xl font-bold text-white shadow-xl">
-              Azores
-            </h1>
-            <h1 class="text-sm font-light text-gray-200 shadow-xl">
-              A Little Paradise in Portugal
-            </h1>
+          <div className=" p-2 flex flex-col ">
+            <h3 className="my-0.5 text-lg font-semibold text-black line-clamp-2">{data?.productName}</h3>
+            <div className="mt-1 text-red-500 flex justify-around">
+              <span className="line-through">{displayInrCurrency(data?.price)}</span>
+              <span className="text-green-600 font-bold">{displayInrCurrency(data?.sellingPrice)}</span>
+            </div>
           </div>
-        </div>
+        </Link>
+        <button
+          className="mt-4 flex items-center justify-center w-auto px-3 py-2 bg-orange-500 text-white text-sm font-medium rounded-md hover:bg-orange-600 transition-colors duration-300 fixed bottom-2 left-2 right-2" 
+          onClick={addToCart}
+        >
+          Add To Cart
+        </button>
       </div>
-    </div>
+    </>
   );
 }
 

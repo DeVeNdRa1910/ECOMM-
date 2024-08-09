@@ -17,6 +17,8 @@ import { uploadProductController } from "../controllers/product/uploadProduct.js
 import { getProductsController } from "../controllers/product/getProducts.js";
 import { updateProductController } from "../controllers/product/updateProduct.js";
 import { getCategoryProduct } from "../controllers/product/getCategoryProduct.js";
+import { getCategoryWiseProduct } from "../controllers/product/getCategoryWiseProduct.js";
+import { getProduct } from "../controllers/product/getProduct.js";
 
 
 const router  = express.Router();
@@ -36,10 +38,12 @@ router.patch('/update-user', getToken, updateUserController);
 
 
 //Products
-router.post('/upload-product', getToken, uploadProductController)
-router.get('/get-products', getProductsController)
-router.post('/update-product', getToken , updateProductController )
-router.get('/get-category-product', getCategoryProduct)
+router.post('/upload-product', getToken, uploadProductController);
+router.get('/get-products', getProductsController);
+router.post('/update-product', getToken , updateProductController );
+router.get('/get-category-product', getCategoryProduct);
+router.post('/category-product', getCategoryWiseProduct);
+router.get('/product-details', getProduct);
 
 
 export default router;

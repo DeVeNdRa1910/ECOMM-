@@ -12,7 +12,7 @@ function CategoryList() {
       setLoading(true);
       const resp = await axios.get("/api/get-category-product");
       setCategoryProduct(resp.data.data);
-      console.log(resp.data);
+      // console.log(resp.data);
       setLoading(false);
     } catch (error) {
       console.log("error ", error);
@@ -30,14 +30,14 @@ function CategoryList() {
   }
 
   return (
-    <div className="sm:h-[10vh] md:h-[12vw] bg-slate-300 ">
+    <div className="sm:h-[10vh] md:h-[12vw] bg-slate-300 overflow-x-scroll scrollbar-hidden  ">
       {loading ? (
         <div className="flex items-center justify-evenly gap-5 py-2 shadow-md  transition-all duration-300 w-full overflow-x-scroll">
           {categoryLoading.map((item, index)=>{
             return (
               <div
                 key={index+"Item"}
-                className="w-[8vw] h-[8vw] rounded-full overflow-hidden bg-slate-600 flex items-center justify-center shadow-lg hover:shadow-gray-400 transition-all duration-500  mx-auto"
+                className="w-[8vw] h-[8vw] rounded-full overflow-hidden bg-slate-600 flex items-center justify-center shadow-lg hover:shadow-gray-400 transition-all duration-500 mx-auto"
               >
                 <LoadingSpinner size={12} color={"orange-500"} />
               </div>
@@ -48,7 +48,7 @@ function CategoryList() {
         <div className="flex items-center justify-evenly gap-5 py-2 shadow-md  transition-all duration-300 w-full overflow-x-scroll scrollbar-hidden">
           {categoryProduct.map((item) => (
             <Link
-              to={"/product-category/" + item?.category}
+              to={"/product-category/:" + item?.category}
               key={item._id}
               className="flex flex-col justify-center"
             >

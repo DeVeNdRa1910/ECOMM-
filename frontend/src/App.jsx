@@ -18,6 +18,8 @@ import AdminPannel from "./pages/AdminPannel";
 import Allusers from "./pages/Allusers";
 import Products from "./pages/Products";
 import CategoryProduct from "./pages/CategoryProduct";
+import ProductPage from './components/ProductPage'
+import Cart from "./pages/Cart";
 
 function App() {
 
@@ -48,7 +50,7 @@ function App() {
       <context.Provider value={{ fetchUserDetails }}>
         <BrowserRouter>
           <Header />
-          <main className="min-h-[130vh] mt-[8vh]">
+          <main className="min-h-[100vh] mt-[8vh]">
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
@@ -61,6 +63,8 @@ function App() {
                 <Route path="all-users" element={<Allusers />} />
                 <Route path="products" element={<Products />} />
               </Route>
+              <Route path="/product-page/:productId" element={<ProductPage />} />
+              <Route path="/Cart" element={<Cart />} />
             </Routes>
           </main>
           <Footer />

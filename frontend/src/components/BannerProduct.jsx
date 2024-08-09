@@ -22,7 +22,7 @@ function BannerProduct() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-    }, 3000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
@@ -30,8 +30,8 @@ function BannerProduct() {
 
   return (
     <div className="container mx-auto mt-2 rounded">
-      <div className=" h-80 w-full relative sm:mx-2 md:mx-1:">
-        <div className="my-auto absolute left-0 top-[33%] bg-orange-500 text-white rounded-r-xl py-6 -z-10 md:z-10">
+      <div className="sm:h-[20vh] md:h-[30vw] w-full relative sm:mx-2 md:mx-1">
+        <div className="my-auto absolute left-0 top-[36%] bg-orange-500 text-white rounded-r-xl py-6 -z-10 md:z-10">
           <button className="text-3xl"
             onClick={()=>setCurrentImage(prev=>{
               if(prev===0) return 4;
@@ -72,7 +72,7 @@ function BannerProduct() {
           })}
         </div>
 
-        <div className="my-auto absolute right-0 top-[33%] bg-orange-500 text-white rounded-l-xl py-6 -z-10 md:z-10">
+        <div className="my-auto absolute right-0 top-[36%] bg-orange-500 text-white rounded-l-xl py-6 -z-10 md:z-10">
           <button className="text-3xl"
             onClick={()=>setCurrentImage(prev=>{
               if(prev===4) return 0;
