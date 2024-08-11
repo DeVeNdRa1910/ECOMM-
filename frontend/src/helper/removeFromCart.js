@@ -1,16 +1,24 @@
-import { fetchProductDetails } from "./fetchProductDetails"
-import { useDispatch } from "react-redux";
-import { remove } from '../store/cartSlice'
+import { toast } from "react-toastify";
+import axios from "axios";
 
-export async function addToCart(productId){
-
-  const dispatch = useDispatch()
-
-  console.log("Making a object");
+export default async function addToCart(e,productId){
+  e.stopPropagation();
+  e.preventDefault();
   
-  // const productObj = await fetchProductDetails(productId)
-  // console.log(productObj.data);
+  try {
+    const resp = await axios.post('/api/removeFromCart', {productId: productId},{
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    console.log(resp.data);
+    const data = resp.data;
 
-  dispatch(remove(productId))  
+    toast.success(data.message)
+
+  } catch (error) {
+    toast.error(error.message)
+  } 
   
 }

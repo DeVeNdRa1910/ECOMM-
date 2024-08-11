@@ -15,7 +15,7 @@ import { useEffect } from "react";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [netQuantity, setNetQuantity] = useState(0)
+  const [netQuantity, setNetQuantity] = useState(0);
 
   const user = useSelector((state) => state?.user?.user);
   const cart = useSelector((state) => state.cart);
@@ -45,15 +45,14 @@ function Header() {
     navigate("/login");
   }
 
-
-  function profileHandler(){
-    if(!user){
-      navigate('/login')
+  function profileHandler() {
+    if (!user) {
+      navigate("/login");
     }
-    if(user.role === "ADMIN"){
-      navigate('/admin-pannel')
-    }else{
-      navigate('/update-profile')
+    if (user.role === "ADMIN") {
+      navigate("/admin-pannel");
+    } else {
+      navigate("/update-profile");
     }
   }
 
@@ -72,24 +71,19 @@ function Header() {
           <Logo />
         </div>
 
-        <form className="w-[40vw] flex items-center h-[6vh]">
+        <div className="w-[50vw]">
           <input
             type="text"
             placeholder="Search..."
-            className="rounded-l-full w-full h-full pl-4 py-1 bg-white focus:outline-none focus:border-white text-black"
+            className=" bg-transparent focus:outline-none border-b border-b-white hidden md:block w-[30vw] mx-auto px-4 py-1 text-white my-auto placeholder:text-slate-200  "
           />
-          <button className="h-full pr-4 rounded-r-full bg-white text-orange-600">
-            <FaSearch />
-          </button>
-        </form>
+        </div>
 
         <div className="flex items-center justify-end gap-4 sm:text-lg md:text-xl lg:text-2xl h-full w-[30vw]">
           <button onClick={profileHandler}>
             {user?._id ? (
               user.profilePic ? (
-                <div 
-                  className="relative rounded-full overflow-hidden h-[7vh] w-[7vh] cursor-pointer"
-                >
+                <div className="relative rounded-full overflow-hidden h-[7vh] w-[7vh] cursor-pointer">
                   <img
                     src={user.profilePic}
                     className="absolute top-0 left-0 w-full"
@@ -97,9 +91,7 @@ function Header() {
                   />
                 </div>
               ) : (
-                <div 
-                  className="text-4xl cursor-pointer"
-                >
+                <div className="text-4xl cursor-pointer">
                   <IoIosContact />
                 </div>
               )
@@ -109,9 +101,12 @@ function Header() {
               </div>
             )}
           </button>
-          <button 
-          onClick={()=>{navigate('/Cart')}}
-          className="bg-black  px-4 flex items-center justify-between gap-2 rounded-xl">
+          <button
+            onClick={() => {
+              navigate("/cart");
+            }}
+            className="bg-black  px-4 flex items-center justify-between gap-2 rounded-xl"
+          >
             <FaCartShopping />:<p className="flex">{netQuantity}</p>
           </button>
 

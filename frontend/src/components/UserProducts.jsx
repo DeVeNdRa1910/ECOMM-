@@ -31,11 +31,11 @@ function UserProducts() {
   }, [])
 
   return (
-    <div className='flex items-center justify-center ml-[2vw] mt-[5vh] pb-[5vh]'>
+    <div className='flex items-center justify-center w-[90vw] mx-auto mt-[5vh] pb-[5vh]'>
       {
         loading ? <LoadingSpinner  /> :
         (
-          <div className='flex flex-wrap  px-4 gap-[2.5vw] justify-evenly '>
+          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-[2.5vw] '>
           {
             allProducts.map((item)=>(
               <div key={item._id}>

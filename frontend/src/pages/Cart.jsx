@@ -5,6 +5,8 @@ import { add, remove } from "../store/cartSlice";
 import displayInrCurrency from "../helper/displayCurrency";
 import { Link } from "react-router-dom";
 import { TiArrowRight } from "react-icons/ti";
+import addToCartDB from "../helper/addToCart";
+import removeFromCart from '../helper/removeFromCart';
 
 function Cart() {
   const dispatch = useDispatch();
@@ -12,13 +14,18 @@ function Cart() {
 
   const items = useSelector((state) => state.cart);
 
-  const addHandler = (item) => {
-    console.log(item);
+  const addHandler = async (e, item) => {
+    // console.log(item);
+
+    await addToCartDB(e,item.id)
 
     dispatch(add(item));
   };
 
-  const removeHandler = (item) => {
+  const removeHandler = async (e,item) => {
+
+    await removeFromCart(e,item.id)
+
     dispatch(remove(item));
   };
 
@@ -78,13 +85,13 @@ function Cart() {
                     <div className="py-4">
                       <button
                         className="text-green-600 mr-3 font-bold"
-                        onClick={() => addHandler(item)}
+                        onClick={(e) => addHandler(e,item)}
                       >
                         Add
                       </button>
                       <button
                         className="text-red-600 ml-3 font-bold"
-                        onClick={() => removeHandler(item)}
+                        onClick={(e) => removeHandler(e,item)}
                       >
                         Remove
                       </button>

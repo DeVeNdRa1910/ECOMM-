@@ -5,6 +5,8 @@ import displayInrCurrency from "../helper/displayCurrency";
 import { toast } from "react-toastify";
 import fetchCategoryWiseProducts from "../helper/fetchCategoryWiseProducts";
 import { useDispatch } from "react-redux";
+import { add } from '../store/cartSlice'
+import addToCartDB from "../helper/addToCart";
 
 function HorizontalCardProducts({ category, heading }) {
 
@@ -61,9 +63,11 @@ function HorizontalCardProducts({ category, heading }) {
     scrollRef.current.scrollLeft -= 300;
   }
 
-  function addToCart(e,data){
+  async function addToCart(e,data){
     e.stopPropagation();
     e.preventDefault();
+
+    await addToCartDB(e,product?._id)
   
     const cartObj = {
       id: data?._id,
