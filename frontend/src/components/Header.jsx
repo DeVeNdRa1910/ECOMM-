@@ -18,7 +18,6 @@ function Header() {
   const [netQuantity, setNetQuantity] = useState(0);
 
   const user = useSelector((state) => state?.user?.user);
-  const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //console.log(user);
@@ -56,13 +55,29 @@ function Header() {
     }
   }
 
+  const [cartProducts, setCartProducts] = useState([])
+  async function fetchQuantity(){
+    const resp = await axios.get('/api/get-cart-products',{
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-token-here',
+      },
+    })
+    setCartProducts(resp.data.data)
+  }
+
+  useEffect(()=>{
+    fetchQuantity()
+  })
+
   useEffect(() => {
+    
     let totalQuantity = 0;
-    for (let i = 0; i < cart.length; i++) {
-      totalQuantity += cart[i].quantity;
+    for (let i = 0; i < cartProducts.length; i++) {
+      totalQuantity += cartProducts[i].quantity;
     }
     setNetQuantity(totalQuantity);
-  }, [cart]);
+  }, [cartProducts]);
 
   return (
     <nav className="bg-orange-500 h-[8vh] w-full text-white fixed top-0 left-0 z-20 opacity-85 backdrop-blur-lg">
