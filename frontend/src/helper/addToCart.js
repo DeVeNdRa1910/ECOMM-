@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-async function addToCartDB(e, id) {
+async function addToCartDB(e, id, data) {
   e.stopPropagation();
   e.preventDefault();
 

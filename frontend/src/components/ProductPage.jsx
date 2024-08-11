@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import displayInrCurrency from "../helper/displayCurrency";
-import LoadingSpinner from "./LoadingSpinner";
 import fetchCategoryWiseProducts from "../helper/fetchCategoryWiseProducts";
 import Card from "./Card";
-import { useDispatch } from "react-redux";
-import { add } from "../store/cartSlice";
 import { IoIosHeart } from "react-icons/io";
 import addToCartDB from "../helper/addToCart";
+import { useDispatch, useSelector } from "react-redux";
+import { add } from "../store/cartSlice";
+import { toast } from "react-toastify";
 
 function ProductPage() {
   const { productId } = useParams();
@@ -44,23 +44,30 @@ function ProductPage() {
     fetchProductData();
   }, [productId]);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const user = useSelector(state=>state.user?.user)
 
   async function addToCart(e) {
     e.stopPropagation();
     e.preventDefault();
 
-    await addToCartDB(e,product?._id)
+    if(!user){
+      toast.error("For use of Cart you have to login")
+      navigate('/login')
+      return;
+    }
 
     const cartObj = {
       id: product?._id,
       productName: product?.productName,
       image: product?.productImage[0],
       quantity: 1,
-      price: product?.sellingPrice,
-    };
+      price: product?.sellingPrice
+    }
 
-    dispatch(add(cartObj));
+    dispatch(add(cartObj))
+
+    await addToCartDB(e,product?._id)
   }
 
   function buyNowHandler(e) {

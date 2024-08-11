@@ -4,9 +4,10 @@ import axios from "axios";
 import displayInrCurrency from "../helper/displayCurrency";
 import { toast } from "react-toastify";
 import fetchCategoryWiseProducts from "../helper/fetchCategoryWiseProducts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { add } from '../store/cartSlice'
 import addToCartDB from "../helper/addToCart";
+import { useNavigate } from "react-router-dom";
 
 function HorizontalCardProducts({ category, heading }) {
 
@@ -63,11 +64,20 @@ function HorizontalCardProducts({ category, heading }) {
     scrollRef.current.scrollLeft -= 300;
   }
 
+  const navigate = useNavigate()
+  const user = useSelector(state=>state.user?.user)
+
   async function addToCart(e,data){
     e.stopPropagation();
     e.preventDefault();
 
-    await addToCartDB(e,product?._id)
+    if(!user){
+      toast.error("For use of Cart you have to login")
+      navigate('/login')
+      return;
+    }
+
+    await addToCartDB(e,data?._id)
   
     const cartObj = {
       id: data?._id,

@@ -5,13 +5,17 @@ import { TiArrowRight } from "react-icons/ti";
 import addToCartDB from "../helper/addToCart";
 import removeFromCart from '../helper/removeFromCart';
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { add, remove } from "../store/cartSlice";
 
 function Cart() {
   const [subTotal, setSubTotal] = useState(0);
-
+  const dispatch = useDispatch()
 
   const addHandler = async (e, item) => {
     // console.log(item);
+
+    dispatch(add(item))
 
     await addToCartDB(e,item.productId)
 
@@ -19,19 +23,11 @@ function Cart() {
 
   const removeHandler = async (e,item) => {
 
+    dispatch(remove(item))
+
     await removeFromCart(e,item.productId)
 
   };
-
-  /* 
-   const cartObj = {
-      id: data?._id,
-      productName: data?.productName,
-      image: data?.productImage[0],
-      quantity: 1,
-      price: data?.sellingPrice
-    }
-  */
 
     const [cartProducts, setCartProducts] = useState([]);
 
@@ -44,7 +40,7 @@ function Cart() {
         })
 
       const cartProductsDB = resp.data.data
-      console.log(cartProductsDB);
+      // console.log(cartProductsDB);
       setCartProducts(cartProductsDB)
     }
 
@@ -53,7 +49,7 @@ function Cart() {
     },[])
 
   useEffect(() => {
-    const priceBeforeCharges = cartProducts.reduce((acc, curr) => {
+    const priceBeforeCharges = cartProducts?.reduce((acc, curr) => {
       return acc + curr.quantity * curr.price;
     }, 0);
 
@@ -69,7 +65,7 @@ function Cart() {
       <h2 className="text-center text-5xl font-bold">ITEM'S IN YOUR CART</h2>
       <div className="w-[100vw] flex items-center justify-center ">
         <div className=" w-[90vw] my-[10vh] px-8 bg-white rounded-lg flex flex-col">
-          {cartProducts.map((item) => {
+          {cartProducts?.map((item) => {
             return (
               <div
                 key={item.productId}

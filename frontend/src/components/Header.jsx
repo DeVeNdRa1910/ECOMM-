@@ -16,7 +16,10 @@ import { useEffect } from "react";
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [netQuantity, setNetQuantity] = useState(0);
+  const [cartQuantity, setCartQuantity] = useState(0);
 
+  const cart = useSelector((state) => state.cart);
+  
   const user = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -68,16 +71,21 @@ function Header() {
 
   useEffect(()=>{
     fetchQuantity()
-  })
+  },[cart])
 
   useEffect(() => {
-    
-    let totalQuantity = 0;
-    for (let i = 0; i < cartProducts.length; i++) {
-      totalQuantity += cartProducts[i].quantity;
+    if(cartProducts){
+      let totalQuantity = 0;
+      for (let i = 0; i < cartProducts.length; i++) {
+        totalQuantity += cartProducts[i].quantity;
+      }
+      setNetQuantity(totalQuantity);
+    }else{
+      setNetQuantity(0)
     }
-    setNetQuantity(totalQuantity);
-  }, [cartProducts]);
+  }, [cartProducts,cart]);
+
+  
 
   return (
     <nav className="bg-orange-500 h-[8vh] w-full text-white fixed top-0 left-0 z-20 opacity-85 backdrop-blur-lg">

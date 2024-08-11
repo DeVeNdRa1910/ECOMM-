@@ -1,7 +1,8 @@
 import { toast } from "react-toastify";
 import axios from "axios";
 
-export default async function addToCart(e,productId){
+
+export default async function removeFromCart(e,productId){
   e.stopPropagation();
   e.preventDefault();
   
@@ -14,7 +15,6 @@ export default async function addToCart(e,productId){
     })
     console.log(resp.data);
     const data = resp.data;
-
     toast.success(data.message)
 
   } catch (error) {

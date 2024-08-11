@@ -1,17 +1,27 @@
 import React from "react";
 import displayInrCurrency from '../helper/displayCurrency';
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { add } from '../store/cartSlice'
 import addToCartDB from "../helper/addToCart";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Card({data}) {
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const user = useSelector(state=>state.user?.user)
 
   async function addToCart(e){
     e.stopPropagation();
     e.preventDefault();
+
+    if(!user){
+      toast.error("For use of Cart you have to login")
+      navigate('/login')
+      return;
+    }
 
     await addToCartDB(e,data?._id)
 
