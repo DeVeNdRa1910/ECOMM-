@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-async function addToCartDB(e, id, data) {
+async function addToCartDB(e, id) {
   e.stopPropagation();
   e.preventDefault();
 
@@ -13,7 +13,7 @@ async function addToCartDB(e, id, data) {
         },
       }
     );
-    console.log(resp.data);
+    //console.log(resp.data);
     
     const data = resp.data;
     if(data.success){

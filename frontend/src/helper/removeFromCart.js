@@ -13,7 +13,7 @@ export default async function removeFromCart(e,productId){
         "Content-Type": "application/json",
       },
     })
-    console.log(resp.data);
+    // console.log(resp.data);
     const data = resp.data;
     toast.success(data.message)
 

@@ -16,7 +16,7 @@ const cartSlice = createSlice({
       }
     },
     remove: (state, action)=>{
-      const index = state.findIndex(item=> item.id === action.payload.id);
+      const index = state.findIndex(item=> item.id === action.payload);
       if(index !== -1){
         const prevQuant = state[index].quantity;
         if(prevQuant === 1){

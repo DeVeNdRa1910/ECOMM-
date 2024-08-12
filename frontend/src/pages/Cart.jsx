@@ -5,12 +5,15 @@ import { TiArrowRight } from "react-icons/ti";
 import addToCartDB from "../helper/addToCart";
 import removeFromCart from '../helper/removeFromCart';
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { add, remove } from "../store/cartSlice";
 
 function Cart() {
   const [subTotal, setSubTotal] = useState(0);
   const dispatch = useDispatch()
+  const [refresh, setRefresh] = useState(true)
+
+  const cart = useSelector(state => state.cart)
 
   const addHandler = async (e, item) => {
     // console.log(item);
@@ -19,14 +22,16 @@ function Cart() {
 
     await addToCartDB(e,item.productId)
 
+    setRefresh(prev=>!prev)
   };
 
   const removeHandler = async (e,item) => {
 
-    dispatch(remove(item))
+    dispatch(remove(item.productId))
 
     await removeFromCart(e,item.productId)
 
+    setRefresh(prev=>!prev)
   };
 
     const [cartProducts, setCartProducts] = useState([]);
@@ -46,7 +51,7 @@ function Cart() {
 
     useEffect(()=>{
       fetchCartProducts()
-    },[])
+    },[refresh, cart])
 
   useEffect(() => {
     const priceBeforeCharges = cartProducts?.reduce((acc, curr) => {

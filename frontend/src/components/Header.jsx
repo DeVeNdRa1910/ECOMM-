@@ -12,18 +12,58 @@ import { toast } from "react-toastify";
 import { setUserDetails } from "../store/userSlice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { add } from "../store/cartSlice";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [netQuantity, setNetQuantity] = useState(0);
-  const [cartQuantity, setCartQuantity] = useState(0);
 
   const cart = useSelector((state) => state.cart);
-  
   const user = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //console.log(user);
+
+  //DB se cart products fetch karke cartSlice me store kar lo
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    async function fetchCartProducts() {
+      const resp = await axios.get("/api/get-cart-products", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer your-token-here",
+        },
+      });
+
+      const cartProductsDB = resp.data.data;
+      // console.log(cartProductsDB);
+      setCartItems(cartProductsDB);
+
+      cartProductsDB?.forEach(item => {
+        const cartObj = {
+          id: item.productId,
+          productName: item.productName,
+          image: item.productImage[0],
+          quantity: item.quantity,
+          price: item.sellingPrice,
+        };
+        
+        dispatch(add(cartObj));
+      });
+      
+    }
+
+    fetchCartProducts();
+  }, [dispatch]);
+
+  useEffect(() => {
+    let numberOfCartItems = cartItems?.reduce(
+      (acc, item) => acc + item.quantity,
+      0
+    );
+    numberOfCartItems>0 ? setNetQuantity(numberOfCartItems) : setNetQuantity(0)
+  }, [cartItems]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -58,34 +98,11 @@ function Header() {
     }
   }
 
-  const [cartProducts, setCartProducts] = useState([])
-  async function fetchQuantity(){
-    const resp = await axios.get('/api/get-cart-products',{
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer your-token-here',
-      },
-    })
-    setCartProducts(resp.data.data)
-  }
-
-  useEffect(()=>{
-    fetchQuantity()
-  },[cart])
-
   useEffect(() => {
-    if(cartProducts){
-      let totalQuantity = 0;
-      for (let i = 0; i < cartProducts.length; i++) {
-        totalQuantity += cartProducts[i].quantity;
-      }
-      setNetQuantity(totalQuantity);
-    }else{
-      setNetQuantity(0)
-    }
-  }, [cartProducts,cart]);
-
-  
+    let quantity = cart?.reduce((acc, item) => acc + item.quantity, 0);
+    // console.log(quantity);
+    setNetQuantity(quantity);
+  }, [cart]);
 
   return (
     <nav className="bg-orange-500 h-[8vh] w-full text-white fixed top-0 left-0 z-20 opacity-85 backdrop-blur-lg">
@@ -126,6 +143,10 @@ function Header() {
           </button>
           <button
             onClick={() => {
+              if (netQuantity === 0) {
+                toast.error("Your cart is empty");
+                return;
+              }
               navigate("/cart");
             }}
             className="bg-black  px-4 flex items-center justify-between gap-2 rounded-xl"
