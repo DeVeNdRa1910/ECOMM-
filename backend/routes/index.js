@@ -23,6 +23,8 @@ import addToCartController from "../controllers/user/addToCartController.js";
 import removeFromCartController from "../controllers/user/deleteFromCartController.js";
 import calculateBillController from "../controllers/user/calculateBill.js";
 import fetchCartProductsController from "../controllers/user/fetchCartProducts.js";
+import { deleteProductFromCartController } from "../controllers/user/deleteProductFromCart.js";
+import { searchProductController } from "../controllers/product/searchProduct.js";
 
 
 const router  = express.Router();
@@ -48,13 +50,15 @@ router.post('/update-product', getToken , updateProductController );
 router.get('/get-category-product', getCategoryProduct);
 router.post('/category-product', getCategoryWiseProduct);
 router.get('/product-details', getProduct);
+router.get('/search', searchProductController);
 
 
 //user add to cart
 router.post('/addToCart', getToken, addToCartController);
 router.post('/removeFromCart', getToken, removeFromCartController);
 router.post('/calculate-bill', getToken, calculateBillController);
-router.get('/get-cart-products', getToken, fetchCartProductsController)
+router.get('/get-cart-products', getToken, fetchCartProductsController);
+router.post('/delete-product', getToken, deleteProductFromCartController);
 
 
 export default router;

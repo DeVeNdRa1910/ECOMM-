@@ -20,6 +20,7 @@ import Products from "./pages/Products";
 import CategoryProduct from "./pages/CategoryProduct";
 import ProductPage from './components/ProductPage'
 import Cart from "./pages/Cart";
+import SearchProductPage from "./pages/SearchProductPage";
 
 function App() {
 
@@ -65,6 +66,7 @@ function App() {
               </Route>
               <Route path="/product-page/:productId" element={<ProductPage />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/search" element={<SearchProductPage />} />
             </Routes>
           </main>
           <Footer />

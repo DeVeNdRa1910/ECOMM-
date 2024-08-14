@@ -3,16 +3,15 @@ import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import Logo from "./Logo";
 import { IoIosContact } from "react-icons/io";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ImMenu } from "react-icons/im";
 import { IoClose } from "react-icons/io5";
 import { FaCartShopping } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { setUserDetails } from "../store/userSlice";
-import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { add } from "../store/cartSlice";
+import { add, clearCart } from "../store/cartSlice";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,13 +21,12 @@ function Header() {
   const user = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  //console.log(user);
 
-  //DB se cart products fetch karke cartSlice me store kar lo
-  const [cartItems, setCartItems] = useState([]);
-
+  // DB se cart products fetch karke cartSlice me store kar lo
   useEffect(() => {
     async function fetchCartProducts() {
+      dispatch(clearCart());
+
       const resp = await axios.get("/api/get-cart-products", {
         headers: {
           "Content-Type": "application/json",
@@ -37,8 +35,6 @@ function Header() {
       });
 
       const cartProductsDB = resp.data.data;
-      // console.log(cartProductsDB);
-      setCartItems(cartProductsDB);
 
       cartProductsDB?.forEach(item => {
         const cartObj = {
@@ -48,22 +44,19 @@ function Header() {
           quantity: item.quantity,
           price: item.sellingPrice,
         };
-        
+
         dispatch(add(cartObj));
       });
-      
     }
 
     fetchCartProducts();
   }, [dispatch]);
 
+  // Calculate netQuantity directly from the cart state
   useEffect(() => {
-    let numberOfCartItems = cartItems?.reduce(
-      (acc, item) => acc + item.quantity,
-      0
-    );
-    numberOfCartItems>0 ? setNetQuantity(numberOfCartItems) : setNetQuantity(0)
-  }, [cartItems]);
+    let quantity = cart?.reduce((acc, item) => acc + item.quantity, 0);
+    setNetQuantity(quantity);
+  }, [cart]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -75,12 +68,9 @@ function Header() {
     });
     if (resp.data.success) {
       navigate("/login");
-      //console.log(resp.data);
       toast.success("Logout Successfully !!!");
       dispatch(setUserDetails(null));
-    }
-    if (resp.data.error) {
-      console.log(resp.data);
+    } else {
       toast.error("Logout Failed !!!");
     }
 
@@ -90,19 +80,31 @@ function Header() {
   function profileHandler() {
     if (!user) {
       navigate("/login");
-    }
-    if (user.role === "ADMIN") {
+    } else if (user.role === "ADMIN") {
       navigate("/admin-pannel");
     } else {
       navigate("/update-profile");
     }
   }
 
-  useEffect(() => {
-    let quantity = cart?.reduce((acc, item) => acc + item.quantity, 0);
-    // console.log(quantity);
-    setNetQuantity(quantity);
-  }, [cart]);
+
+  //apply Debouncing
+  const searchInput = useLocation();
+  const URLSearch = new URLSearchParams(searchInput?.search);
+  const searchQuery = URLSearch.getAll("q");
+  const [search, setSearch] = useState(searchQuery)
+  
+  function handleSearch(e){
+
+    let {value} = e.target
+    setSearch(value)
+
+    if(value){
+      navigate(`/search?q=${value}`)
+    }else{
+      navigate('/search')
+    }
+  }
 
   return (
     <nav className="bg-orange-500 h-[8vh] w-full text-white fixed top-0 left-0 z-20 opacity-85 backdrop-blur-lg">
@@ -116,6 +118,8 @@ function Header() {
             type="text"
             placeholder="Search..."
             className=" bg-transparent focus:outline-none border-b border-b-white hidden md:block w-[30vw] mx-auto px-4 py-1 text-white my-auto placeholder:text-slate-200  "
+            onChange={handleSearch}
+            value={search}
           />
         </div>
 

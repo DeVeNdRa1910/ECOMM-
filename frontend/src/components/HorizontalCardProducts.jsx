@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { add } from '../store/cartSlice'
 import addToCartDB from "../helper/addToCart";
 import { useNavigate } from "react-router-dom";
+import { increase } from "../store/cartSliceNumber";
 
 function HorizontalCardProducts({ category, heading }) {
 
@@ -88,6 +89,7 @@ function HorizontalCardProducts({ category, heading }) {
     }
   
     dispatch(add(cartObj))
+    dispatch(increase(1))
     
   }
 

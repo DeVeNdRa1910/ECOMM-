@@ -8,7 +8,9 @@ import { store } from './store/store.js'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <ToastContainer />
+    <ToastContainer 
+      position='top-left'
+    />
     <App/>
   </Provider>,
 )

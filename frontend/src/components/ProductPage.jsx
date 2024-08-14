@@ -9,6 +9,7 @@ import addToCartDB from "../helper/addToCart";
 import { useDispatch, useSelector } from "react-redux";
 import { add } from "../store/cartSlice";
 import { toast } from "react-toastify";
+import { increase } from "../store/cartSliceNumber";
 
 function ProductPage() {
   const { productId } = useParams();
@@ -66,6 +67,7 @@ function ProductPage() {
     }
 
     dispatch(add(cartObj))
+    dispatch(increase(1))
 
     await addToCartDB(e,product?._id)
   }

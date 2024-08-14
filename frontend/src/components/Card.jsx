@@ -6,6 +6,7 @@ import { add } from '../store/cartSlice'
 import addToCartDB from "../helper/addToCart";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { increase } from "../store/cartSliceNumber";
 
 function Card({data}) {
 
@@ -34,6 +35,7 @@ function Card({data}) {
     }
 
     dispatch(add(cartObj))
+    dispatch(increase(1))
   }
 
   return (

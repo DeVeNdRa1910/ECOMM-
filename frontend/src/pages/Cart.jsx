@@ -3,170 +3,198 @@ import displayInrCurrency from "../helper/displayCurrency";
 import { Link } from "react-router-dom";
 import { TiArrowRight } from "react-icons/ti";
 import addToCartDB from "../helper/addToCart";
-import removeFromCart from '../helper/removeFromCart';
+import removeFromCart from "../helper/removeFromCart";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { add, remove } from "../store/cartSlice";
+import { FaMinus, FaPlus } from "react-icons/fa";
+import { RiDeleteBin6Fill } from "react-icons/ri";
+import { decrease, increase } from "../store/cartSliceNumber";
 
 function Cart() {
-  const [subTotal, setSubTotal] = useState(0);
-  const dispatch = useDispatch()
-  const [refresh, setRefresh] = useState(true)
+  const dispatch = useDispatch();
 
-  const cart = useSelector(state => state.cart)
+  const [subTotal, setSubTotal] = useState(0);
+  const [refresh, setRefresh] = useState(true);
+
+  const cart = useSelector((state) => state.cart);
 
   const addHandler = async (e, item) => {
-    // console.log(item);
-
-    dispatch(add(item))
-
-    await addToCartDB(e,item.productId)
-
-    setRefresh(prev=>!prev)
+    dispatch(add(item));
+    dispatch(increase(1))
+    await addToCartDB(e, item.productId);
+    setRefresh((prev) => !prev);
   };
 
-  const removeHandler = async (e,item) => {
-
-    dispatch(remove(item.productId))
-
-    await removeFromCart(e,item.productId)
-
-    setRefresh(prev=>!prev)
+  const removeHandler = async (e, item) => {
+    dispatch(remove(item.productId));
+    dispatch(decrease(1))
+    await removeFromCart(e, item.productId);
+    setRefresh((prev) => !prev);
   };
 
-    const [cartProducts, setCartProducts] = useState([]);
+  const [cartProducts, setCartProducts] = useState([]);
 
-    async function fetchCartProducts(){
-      const resp = await axios.get('/api/get-cart-products',{
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer your-token-here',
-          },
-        })
+  async function fetchCartProducts() {
+    const resp = await axios.get("/api/get-cart-products", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer your-token-here",
+      },
+    });
 
-      const cartProductsDB = resp.data.data
-      // console.log(cartProductsDB);
-      setCartProducts(cartProductsDB)
-    }
+    const cartProductsDB = resp.data.data;
+    setCartProducts(cartProductsDB);
+  }
 
-    useEffect(()=>{
-      fetchCartProducts()
-    },[refresh, cart])
+  useEffect(() => {
+    fetchCartProducts();
+  }, [refresh, cart]);
 
   useEffect(() => {
     const priceBeforeCharges = cartProducts?.reduce((acc, curr) => {
       return acc + curr.quantity * curr.price;
     }, 0);
 
-    setSubTotal(priceBeforeCharges);
+    priceBeforeCharges ? setSubTotal(priceBeforeCharges) : setSubTotal(0);
   }, [cartProducts]);
 
-  function chechoutHandler(){
-    alert("Thnkyou for shopping")
+  async function deleteProductHandler(id){
+    try {
+      const resp = await axios.post("/api/delete-product", {productId: id},{
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      } )
+
+      console.log(resp.data.message);
+      
+    } catch (error) {
+      console.log(error);
+    }
+    setRefresh((prev) => !prev);
+  }
+
+  function checkoutHandler() {
+    alert("Thnkyou for shopping");
   }
 
   return (
-    <div className="bg-gradient-to-b from-blue-200 to-blue-800">
-      <h2 className="text-center text-5xl font-bold">ITEM'S IN YOUR CART</h2>
+    <div className="bg-gradient-to-b from-blue-200 to-blue-800 ">
+      <h2 className="text-center sm:text-sm md:text-xl lg:text-3xl font-bold">
+        ITEM'S IN YOUR CART
+      </h2>
       <div className="w-[100vw] flex items-center justify-center ">
-        <div className=" w-[90vw] my-[10vh] px-8 bg-white rounded-lg flex flex-col">
+        <div className="w-[100vw] md:w-[90vw] md:mx-auto my-[3vh] md:my-[8vh] bg-white rounded-lg flex flex-col">
           {cartProducts?.map((item) => {
             return (
               <div
                 key={item.productId}
-                className="w-full flex items-center justify-between border-b border-stone-400"
+                className="w-full flex flex-col sm:flex-row border-b border-stone-400"
               >
-                <div className="w-[50vh] h-[25vh] p-3 flex items-center justify-center">
-                  <img
-                    src={item.productImage[0]}
-                    className="h-full w-auto mix-blend-multiply rounded-lg"
-                    alt=""
-                  />
+                <div className="flex flex-row w-full sm:w-[50%] p-3">
+                  <div className="w-[30%] flex items-center justify-center">
+                    <img
+                      src={item.productImage[0]}
+                      className="h-auto w-auto max-h-[100px] max-w-[100px] mix-blend-multiply rounded-lg"
+                      alt=""
+                    />
+                  </div>
+                  <div className="w-[70%] flex items-center pl-4">
+                    <p className="text-justify text-sm md:text-lg lg:text-xl">
+                      {item.productName}
+                    </p>
+                  </div>
                 </div>
-                <div className="w-[50vh] h-[25vh] m-2 p-2 flex items-center">
-                  <p className="text-justify line-clamp-3">
-                    {item.productName}
-                  </p>
-                </div>
-                <div className="w-[25vh] h-[25vh] flex items-center justify-center">
-                  <div>
-                    <p className="text-center">
-                      Quantity:{" "}
-                      <span className="text-lg font-semibold">
+                <div className="flex w-full md:w-[50%] py-3 justify-between">
+                  <div className="w-[45%] flex flex-col items-center justify-center">
+                    <div className="flex items-center">
+                      <button
+                        className="text-white p-1 md:p-2 bg-green-600 font-bold rounded-l-md"
+                        onClick={(e) => addHandler(e, item)}
+                      >
+                        <FaPlus />
+                      </button>
+                      <span className="h-full text-md md:text-lg font-semibold px-4 flex items-center bg-slate-200">
                         {item.quantity}
                       </span>
-                    </p>
-                    <div className="py-4">
                       <button
-                        className="text-green-600 mr-3 font-bold"
-                        onClick={(e) => addHandler(e,item)}
+                        className="text-white p-1 md:p-2 bg-red-600 font-bold rounded-r-md"
+                        onClick={(e) => removeHandler(e, item)}
                       >
-                        Add
-                      </button>
-                      <button
-                        className="text-red-600 ml-3 font-bold"
-                        onClick={(e) => removeHandler(e,item)}
-                      >
-                        Remove
+                        <FaMinus />
                       </button>
                     </div>
                   </div>
-                </div>
-                <div className="w-[20vh] h-[25vh] flex items-center justify-center">
-                  <div>
+                  <div className="w-[45%] flex items-center justify-center">
                     <p className="text-center text-lg font-semibold">
                       {displayInrCurrency(item.quantity * item.price)}
                     </p>
+                  </div>
+                  <div className="w-[8%] h-full bg-white hover:bg-red-600 text-red-600 hover:text-white text-xl flex items-center justify-center cursor-pointer "
+                    onClick={()=>deleteProductHandler(item.productId)}
+                  >
+                    <RiDeleteBin6Fill />
                   </div>
                 </div>
               </div>
             );
           })}
 
-          <div className=" w-[80%] mx-auto mb-8 mt-[15vh] bg-slate-200 rounded-xl">
-            <div className="p-[10vh]">
-              <div className="border-b border-slate-300 flex items-center justify-between py-3 text-lg font-semibold">
+          <div className="w-[90%] sm:w-[80%] mx-auto mb-8 mt-[10vh] bg-slate-200 rounded-xl">
+            <div className="p-[5vh] sm:p-[10vh]">
+              <div className="border-b border-slate-300 flex items-center justify-between py-3 text-sm sm:text-sm font-semibold">
                 <h2 className="w-[50%]">Subtotal</h2>
-                <span className=" mr-2">{displayInrCurrency(subTotal)}</span>
+                <span className="mr-2">{displayInrCurrency(subTotal)}</span>
               </div>
-              <div className="border-b border-slate-300 flex items-center justify-between py-3 text-lg font-semibold">
+              <div className="border-b border-slate-300 flex items-center justify-between py-3 text-sm sm:text-sm font-semibold">
                 <h2 className="">
-                  Sipping Charges{" "}
-                  <span className="text-xs font-normal">
+                  Shipping Charges{" "}
+                  <span className="text-xs sm:text-sm font-normal">
                     (Enjoy Free Shipping on Orders Over ₹10,000!)
                   </span>
                 </h2>
-                <span className=" mr-2">
-                  {displayInrCurrency(subTotal > 10000 ? 0 : Math.floor(subTotal * 0.05))}
+                <span className="mr-2">
+                  {displayInrCurrency(
+                    subTotal > 10000 ? 0 : Math.floor(subTotal * 0.05)
+                  )}
                 </span>
               </div>
-              <div className="border-b border-slate-300 flex items-center justify-between py-3 text-lg font-semibold">
+              <div className="border-b border-slate-300 flex items-center justify-between py-3 text-sm sm:text-sm font-semibold">
                 <h2 className="w-[50%]">Tax (CGST+SCGT)</h2>
-                <span className=" mr-2">{displayInrCurrency(Math.floor(subTotal * 0.18))}</span>
-              </div>
-              <div className="border-b border-slate-300 flex items-center justify-between py-3 text-lg font-semibold">
-                <h2 className="w-[50%]">Order Total</h2>
-                <span className=" mr-2">
-                  {displayInrCurrency(Math.floor(subTotal * 0.18) +
-                    subTotal +
-                    (subTotal > 10000 ? 0 : Math.floor(subTotal * 0.05)))}
+                <span className="mr-2">
+                  {displayInrCurrency(Math.floor(subTotal * 0.18))}
                 </span>
               </div>
-              <div className="rounded-lg border-2 border-orange-500 mt-[10vh] ">
-                <button 
-                  onClick={chechoutHandler}
-                  className="w-full py-2 bg-orange-600 hover:bg-orange-500 active:scale-95 rounded-lg text-white text-xl font-semibold font-mono border-2 border-white">
+              <div className="border-b border-slate-300 flex items-center justify-between py-3 text-sm sm:text-sm font-semibold">
+                <h2 className="w-[50%]">Order Total</h2>
+                <span className="mr-2">
+                  {displayInrCurrency(
+                    Math.floor(subTotal * 0.18) +
+                      subTotal +
+                      (subTotal > 10000 ? 0 : Math.floor(subTotal * 0.05))
+                  )}
+                </span>
+              </div>
+              <div className="rounded-lg border-2 border-orange-500 mt-[5vh] sm:mt-[10vh] ">
+                <button
+                  onClick={checkoutHandler}
+                  className="w-full py-2 bg-orange-600 hover:bg-orange-500 active:scale-95 rounded-lg text-white text-sm sm:text-xl font-semibold font-mono border-2 border-white"
+                >
                   Checkout
                 </button>
               </div>
               <div className="w-full mt-4 text-center">
                 <Link
                   to={"/"}
-                  className="text-orange-600 hover:text-orange-400 flex items-center justify-center gap-2"
-                > 
+                  className="text-orange-600 hover:text-orange-400 flex items-center justify-center gap-2 text-sm sm:text-base"
+                >
                   <p className="text-black">or</p>
                   <span>Continue Shopping</span>
-                  <p className="-ml-2 text-xl py-1"><TiArrowRight /></p>
+                  <p className="-ml-2 text-xl py-1">
+                    <TiArrowRight />
+                  </p>
                 </Link>
               </div>
             </div>
