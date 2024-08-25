@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import './App.css';
 import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
@@ -21,6 +21,9 @@ import CategoryProduct from "./pages/CategoryProduct";
 import ProductPage from './components/ProductPage'
 import Cart from "./pages/Cart";
 import SearchProductPage from "./pages/SearchProductPage";
+import Success from "./pages/Success";
+import Cancel from "./pages/Cancel";
+import Order from "./pages/Order";
 
 function App() {
 
@@ -67,6 +70,9 @@ function App() {
               <Route path="/product-page/:productId" element={<ProductPage />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/search" element={<SearchProductPage />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/cancel" element={<Cancel />} />
+              <Route path="/orders" element={<Order />} />
             </Routes>
           </main>
           <Footer />

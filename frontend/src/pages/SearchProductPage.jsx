@@ -10,6 +10,8 @@ function SearchProductPage() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
 
+  const loadingArr = new Array(8).fill(null)
+
   console.log(query.search);
 
   async function fetchProducts(){
@@ -37,7 +39,13 @@ function SearchProductPage() {
   return (
     <div className="w-full h-full flex items-center justify-center mx-auto my-[5vh] pb-[5vh] bg-gradient-to-b from-blue-800 to-white">
       {loading ? (
-        <LoadingSpinner />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-[2.5vw] py-[5vh]">
+        {loadingArr.map((item, i) => (
+          <div key={i}>
+            <Card data={item} />
+          </div>
+        ))}
+      </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-[2.5vw] py-[5vh]">
           {products.map((item) => (

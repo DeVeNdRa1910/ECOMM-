@@ -25,6 +25,7 @@ import calculateBillController from "../controllers/user/calculateBill.js";
 import fetchCartProductsController from "../controllers/user/fetchCartProducts.js";
 import { deleteProductFromCartController } from "../controllers/user/deleteProductFromCart.js";
 import { searchProductController } from "../controllers/product/searchProduct.js";
+import { paymentController } from "../controllers/order/paymentController.js";
 
 
 const router  = express.Router();
@@ -59,6 +60,10 @@ router.post('/removeFromCart', getToken, removeFromCartController);
 router.post('/calculate-bill', getToken, calculateBillController);
 router.get('/get-cart-products', getToken, fetchCartProductsController);
 router.post('/delete-product', getToken, deleteProductFromCartController);
+
+
+//order
+router.post('/checkout', getToken, paymentController)
 
 
 export default router;

@@ -12,10 +12,8 @@ upload_preset - The name of an unsigned upload preset that you defined for unsig
 
 
 import axios from "axios";
-
-const cloud_name = "dubjd0yfz";
-
-const url = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`
+// const url = `https://api.cloudinary.com/v1_1/dubjd0yfz/image/upload`;
+const url = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 async function uploadImage(image){
   const formData = new FormData();

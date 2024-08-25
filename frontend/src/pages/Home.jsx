@@ -5,6 +5,7 @@ import UserProducts from '../components/UserProducts';
 import HorizontalCardProducts from '../components/HorizontalCardProducts';
 
 function Home() {
+
   return (
     <div className="bg-gradient-to-r from-blue-600 to-blue-200 h-full">
       <CategoryList />

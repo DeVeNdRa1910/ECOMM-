@@ -10,6 +10,7 @@ import { add, remove } from "../store/cartSlice";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { decrease, increase } from "../store/cartSliceNumber";
+import { loadStripe } from "@stripe/stripe-js";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -51,9 +52,11 @@ function Cart() {
     fetchCartProducts();
   }, [refresh, cart]);
 
+
   useEffect(() => {
+    // console.log(cartProducts);
     const priceBeforeCharges = cartProducts?.reduce((acc, curr) => {
-      return acc + curr.quantity * curr.price;
+      return acc + curr.totalPrice;
     }, 0);
 
     priceBeforeCharges ? setSubTotal(priceBeforeCharges) : setSubTotal(0);
@@ -76,9 +79,26 @@ function Cart() {
     setRefresh((prev) => !prev);
   }
 
-  function checkoutHandler() {
-    alert("Thnkyou for shopping");
+  async function checkoutHandler() {
+
+     // console.log("Stripe Public Key:", import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+     const stripePromise = await loadStripe(`${import.meta.env.VITE_STRIPE_PUBLIC_KEY}`)
+
+    const resp = await axios.post('/api/checkout', { cartItems : cartProducts}, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    })
+    console.log(" Payment Response ", resp.data);
+
+    if(resp.data?.id){
+      stripePromise.redirectToCheckout({sessionId: resp.data.id})
+    }
+
   }
+
+  /* "You did not provide an API key. You need to provide your API key in the Authorization header, using Bearer auth (e.g. 'Authorization: Bearer YOUR_SECRET_KEY'). See https://stripe.com/docs/api#authentication for details, or we can help at https://support.stripe.com/." */
 
   return (
     <div className="bg-gradient-to-b from-blue-200 to-blue-800 ">
@@ -129,7 +149,7 @@ function Cart() {
                   </div>
                   <div className="w-[45%] flex items-center justify-center">
                     <p className="text-center text-lg font-semibold">
-                      {displayInrCurrency(item.quantity * item.price)}
+                      {displayInrCurrency(item.quantity * item.sellingPrice)}
                     </p>
                   </div>
                   <div className="w-[8%] h-full bg-white hover:bg-red-600 text-red-600 hover:text-white text-xl flex items-center justify-center cursor-pointer "
@@ -152,12 +172,12 @@ function Cart() {
                 <h2 className="">
                   Shipping Charges{" "}
                   <span className="text-xs sm:text-sm font-normal">
-                    (Enjoy Free Shipping on Orders Over ₹10,000!)
+                    (Enjoy Free Shipping on Orders Over ₹1000!)
                   </span>
                 </h2>
                 <span className="mr-2">
                   {displayInrCurrency(
-                    subTotal > 10000 ? 0 : Math.floor(subTotal * 0.05)
+                    subTotal > 1000 ? 0 : 40
                   )}
                 </span>
               </div>
@@ -173,7 +193,7 @@ function Cart() {
                   {displayInrCurrency(
                     Math.floor(subTotal * 0.18) +
                       subTotal +
-                      (subTotal > 10000 ? 0 : Math.floor(subTotal * 0.05))
+                      (subTotal > 1000 ? 0 : 40)
                   )}
                 </span>
               </div>

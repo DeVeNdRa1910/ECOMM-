@@ -1,4 +1,4 @@
-import { cartProduct } from "../../models/cartProduct.js";
+import { cartProduct } from "../../src/models/cartProduct.js";
 
 export default async function removeFromCartController(req, res) {
     try {
