@@ -1,5 +1,5 @@
-import { cartProduct } from "../../src/models/cartProduct.js";
-import { Product } from "../../src/models/product.model.js";
+import { cartProduct } from "../../models/cartProduct.js";
+import { Product } from "../../models/product.model.js";
 
 export default async function fetchCartProductsController(req, res) {
     try {

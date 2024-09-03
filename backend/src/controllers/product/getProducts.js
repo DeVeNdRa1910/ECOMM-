@@ -1,4 +1,4 @@
-import { Product } from "../../src/models/product.model.js";
+import { Product } from "../../models/product.model.js";
 
 export async function getProductsController(req, res){
     try {
